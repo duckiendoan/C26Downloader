@@ -10,6 +10,9 @@ namespace C26Downloader
 {
     internal class FileDownloader : IFileDownloader
     {
+        public static GoogleDriveDownloader GoogleDrive { get; set; }
+            = new GoogleDriveDownloader();
+
         public event Func<FileProperties, Task> FileProperitiesRetrieved;
 
         public event Func<FileDownloadCompletedEventArgs, Task> FileDownloadCompleted;
@@ -22,7 +25,7 @@ namespace C26Downloader
 
         public FileDownloader(HttpClient client = null)
         {
-            _client = client ?? new HttpClient() { Timeout = TimeSpan.FromHours(1) };
+            _client = client ?? new HttpClient() { Timeout = TimeSpan.FromHours(2) };
         }
 
         public virtual Task DownloadAsync(string requestUri, string filename = null, CancellationToken cancellationToken = default(CancellationToken))
@@ -30,7 +33,8 @@ namespace C26Downloader
 
         public virtual async Task DownloadAsync(Uri requestUri, string filename = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            //Only read the headers
+            // Only read the headers
+            // New approach
             using (var response = await _client.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead, cancellationToken))
                 await InternalDownloadAsync(response, filename, cancellationToken);
         }
@@ -64,7 +68,7 @@ namespace C26Downloader
                     filename += $".{(ext != "text/plain" ? ext.Split('/')[1] : "txt")}";
             }
             // Check for duplicate
-            filename = Path.Combine(directory, Utils.GetFilename(filename, Directory.GetFiles(directory)));
+            filename = Path.Combine(directory, Utils.GetFilenameTest(filename, Directory.GetFiles(directory)));
             
             await FileProperitiesRetrieved?.Invoke(new FileProperties
             {

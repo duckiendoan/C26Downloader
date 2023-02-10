@@ -7,7 +7,7 @@ namespace C26Downloader
 {
     internal class Utils
     {
-        public static string GetFilename(string filename, IEnumerable<string> files)
+        public static string GetFilenameTest(string filename, IEnumerable<string> files)
         {
             files = files.Select(x => Path.GetFileName(x));
             int index = 1;

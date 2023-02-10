@@ -37,12 +37,16 @@ namespace C26Downloader
                 })
                 .ToList();
             
-            return new ScribdDocument();
+            return new ScribdDocument()
+            {
+                PageUrls = pagesUrl
+            };
         }
 
         public async Task<Stream> ToHtmlAsync(Uri requestUri)
         {
-            if (!requestUri.Host.EndsWith("scribd.com")) throw new Exception("Url is not a scribd document url");
+            if (!requestUri.Host.EndsWith("scribd.com")) 
+                throw new Exception("Url is not a scribd document url");
 
             var content = await _client.GetStringAsync(requestUri);
             var pagesUrl = _pageRegex.Matches(content)
@@ -73,7 +77,7 @@ namespace C26Downloader
         public string Title { get; set; }
         public long Id { get; set; }
         public string Author { get; set; }
-        public long PageCount { get; set; }
+        public int PageCount { get; set; }
         public double Rating { get; set; }
         public IReadOnlyList<string> PageUrls { get; set; }
     }
@@ -82,8 +86,8 @@ namespace C26Downloader
     {
         public static async Task SaveToAsync(this Stream stream, string filename)
         {
-            using (var fs = new FileStream(filename, FileMode.Create))
-                await stream.CopyToAsync(fs);
+            using var fs = new FileStream(filename, FileMode.Create);
+            await stream.CopyToAsync(fs);
         }
     }
 }

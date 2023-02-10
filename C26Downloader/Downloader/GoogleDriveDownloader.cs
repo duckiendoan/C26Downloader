@@ -49,11 +49,14 @@ namespace C26Downloader
         private string GetFileId(string url)
         {
             var uri = new Uri(url);
-            if (uri.Host != "drive.google.com") throw new InvalidOperationException("URL is not a google drive url");
+            if (uri.Host != "drive.google.com") 
+                throw new InvalidOperationException("URL is not a google drive url");
             //Handle https://drive.google.com/file/d/FILEID/view?usp=sharing
-            if (url.Contains("/file/d")) return uri.Segments[3].Trim('/');
+            if (url.Contains("/file/d")) 
+                return uri.Segments[3].Trim('/');
             //Handle https://drive.google.com/open?id=FILEID
-            else if (url.Contains("?id=")) return HttpUtility.ParseQueryString(uri.Query).Get("id");
+            else if (url.Contains("?id=")) 
+                return HttpUtility.ParseQueryString(uri.Query).Get("id");
 
             return null;
         }

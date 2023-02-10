@@ -24,7 +24,6 @@ namespace C26Downloader
             downloader = uri.Host switch
             {
                 "drive.google.com" => new GoogleDriveDownloader(),
-                
                 _ => new FileDownloader(),
             };
             if (!disabled)
